@@ -1,21 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { FlatList, SafeAreaView } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
 
-export default function App() {
+import renderFooter from './src/components/renderFooter';
+import renderItem from './src/components/renderItem';
+import { useFetchVideos } from './src/components/useFetchVideos';
+import { Container } from './src/styles';
+
+const App = () => {
+  const [videos, fetchMore] = useFetchVideos();
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <SafeAreaView>
+        <Container>
+          <FlatList
+            style={{ marginTop: 30 }}
+            data={videos}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            onEndReached={fetchMore}
+            onEndReachedThreshold={0.1}
+            ListFooterComponent={renderFooter}
+          />
+        </Container>
+      </SafeAreaView>
+    </PaperProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
